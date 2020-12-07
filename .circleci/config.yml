@@ -1,0 +1,15 @@
+version: 2.1
+jobs:
+  install-and-test:
+    docker:
+      - image: circleci/python:3.5.9
+      - image: circleci/redis:5.0.0
+    steps:
+      - checkout
+      - run: sudo python setup.py install
+      - run: pip install pytest mock
+      - run: py.test
+workflows:
+  test:
+    jobs:
+      - install-and-test
