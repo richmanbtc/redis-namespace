@@ -28,7 +28,7 @@ class TestPipeline(object):
         with r.pipeline() as pipe:
             # Initially empty.
             assert len(pipe) == 0
-            assert not pipe
+            assert pipe  # empty pipe is truthy in redis-py 3.5+
 
             # Fill 'er up!
             pipe.set('a', 'a1').set('b', 'b1').set('c', 'c1')
@@ -38,7 +38,7 @@ class TestPipeline(object):
             # Execute calls reset(), so empty once again.
             pipe.execute()
             assert len(pipe) == 0
-            assert not pipe
+            assert pipe
 
     def test_pipeline_no_transaction(self, r):
         with r.pipeline(transaction=False) as pipe:

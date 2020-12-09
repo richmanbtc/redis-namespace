@@ -54,7 +54,9 @@ class TestLock(object):
         lock2 = self.get_lock(r, 'foo', blocking_timeout=0.2)
         start = time.time()
         assert not lock2.acquire()
-        assert (time.time() - start) > 0.2
+        # Due to optimization in redis-py, see #1263, this assertion no longer holds
+        # assert (time.time() - start) > 0.2
+        assert (time.time() - start) > 0.0
         lock1.release()
 
     def test_context_manager(self, r):
@@ -70,6 +72,7 @@ class TestLock(object):
             with self.get_lock(r, 'foo', blocking_timeout=0.1):
                 pass
 
+    @pytest.mark.skip("This is no longer valid in redis-py 3.5+")
     def test_high_sleep_raises_error(self, r):
         "If sleep is higher than timeout, it should raise an error"
         with pytest.raises(LockError):
